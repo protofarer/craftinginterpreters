@@ -1,1 +1,1 @@
-# Working through Crafting Interpreters by Robert Nystrom
+# Working through [Crafting Interpreters](https://craftinginterpreters.com/) by Robert Nystrom
