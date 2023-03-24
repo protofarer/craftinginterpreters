@@ -1,0 +1,62 @@
+fun add(x, y) {
+  return x + y;
+}
+
+print add(1,2);
+
+fun Cadder(c) {
+  fun addme(x) {
+    return add(x, c);
+  }
+  return addme;
+}
+
+var add5 = Cadder(5);
+
+// initializes with a function and bakes in an argument to said function
+class funformer {
+  init(f, c) {
+    this.f = f;
+    this.c = c;
+    fun somefunc(c) {
+      print "funformer received baked arg value of ";
+      print c;
+
+      fun infun(x) {
+        return f(c, x);
+      }
+      return infun;
+    }
+    this.g = somefunc(c);
+  }
+
+  call(x) {
+    return this.g(x);
+  }
+}
+
+var adderole = funformer(add, 1000);
+print adderole.call(5);
+
+class funformerprinter < funformer {
+  init(f, c, s) {
+    super.init(f, c);
+    this.s = s;
+  }
+
+  preent() {
+    print "the init fun is";
+    print this.f;
+    print "the former fun is";
+    print this.g;
+    print "the baked arg is";
+    print this.c;
+    print "The string of the derived class is";
+    print this.s;
+  }
+}
+
+var printingbaker = funformerprinter(add, 7, "I like to move it move it!");
+printingbaker.preent();
+
+print printingbaker.someprop;

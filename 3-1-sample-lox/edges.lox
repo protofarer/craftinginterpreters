@@ -1,0 +1,140 @@
+var a = 0;
+var b = 1;
+var s = "a phrase";
+var s1 = "another phrase";
+var isTrue = true;
+
+// print built-in concatenation of different types
+
+// EDGE: only accepts 2 numbers or 2 strings
+// print s + a;
+
+// nice
+var c = 9999999999999999999999999999999999999999999999999999999999999999999;
+// print c;
+
+
+// multiple negation works
+var d = ---2;
+// print d;
+
+// short circuits
+// print isTrue and "hola!";
+// print !isTrue and "no hola!";
+print !!1 == !!1;
+
+class foo {
+  init() {
+    this.p = "hoohee";
+  }
+}
+
+var f1 = foo();
+var f2 = foo();
+
+// instantiated classes eq compare is false despite same class
+print f1 == f2;
+
+print f1.p;
+
+// change a field on object
+f1.p = "hoooooo";
+print f1.p;
+
+// add fields to object
+f1.new = "a new field";
+print f1.new;
+
+fun farook() {
+  fun init() { 
+    print "ran init inside farook";
+  }
+  // this.init = init;
+  var x = 314159265828;
+  // this.x = x;
+}
+
+// functions cannot have fields nor methods
+// print farook.x;
+// print farook.init();
+
+// curlies demarcate context
+var scopeVar = "outside";
+{
+  var scopeVar = "inside";
+  print scopeVar;
+
+  // functions not hoisted
+  // grabOutsideVar();
+}
+print scopeVar;
+
+fun grabOutsideVar() {
+  print scopeVar + " is accessible from outside this function";
+}
+
+grabOutsideVar();
+
+fun refersToInsideVarSameName() {
+  var scopeVar = "inside grabOutsideVar";
+  print scopeVar;
+}
+
+refersToInsideVarSameName();
+
+var neelyo;
+print neelyo;
+neelyo = "neelyo is set";
+print neelyo;
+neelyo = nil;
+print neelyo;
+
+
+fun branchit(x) {
+  if (x > 0) {
+    print "first branch";
+  } else if (x == 0) {
+    print "second branch";
+  } else {
+    print "else branch";
+  }
+}
+
+branchit(1);
+branchit(0);
+branchit(-1);
+
+// edge: throws when logical operator used with number
+// branchit(nil);
+
+
+// when no function return statement, nil returned implicitly
+print branchit(-1);
+
+// infinities work
+print 1 / 0;
+print -1 / 0;
+
+// NaN returned but not doesn't exist as a keyword/literal in language (for comparisons)
+print 0 / 0;
+// print "a" == NaN;
+
+var badS = "a string concatened with ";
+
+// FEATURE SUGGESTIONS 
+
+// 1. evaluate escaped characters in strings
+// print s + " " + s1 + "\n\n";
+
+// 2. a print built-in or stdlib for not auto-newlining
+// 3. error handling
+// 4. shorthand increment/decrement
+    // var counter = 0;
+    // print ++counter;
+// 5. foreach
+// 6. functional stdlib like map/filter/reduce
+// 7. string comparison operators
+    // print "a" > "b";
+// 8. template strings aka f-strings
+// 9. implicit semicolons
+// 10. typeof and instanceof methods
