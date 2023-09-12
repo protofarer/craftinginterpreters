@@ -1,3 +1,5 @@
+package com.craftinginterpreters.lox;
+
 enum TokenType {
   // Single-character tokens,
   LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE,
@@ -5,8 +7,9 @@ enum TokenType {
 
   // ONE OR TWO CHARACTER TOKENS,
   BANG, BANG_EQUAL,
-  EEQUAL, EQUAL_EQUAL,
+  EQUAL, EQUAL_EQUAL,
   GREATER, GREATER_EQUAL,
+  LESS, LESS_EQUAL,
 
   // LITERALS,
   IDENTIFIER, STRING, NUMBER,
