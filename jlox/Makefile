@@ -12,8 +12,11 @@ run:
 run-file: always_run
 	java -cp bin com.craftinginterpreters.lox.Lox $(filter-out $@,$(MAKECMDGOALS))
 
+run-script: always_run
+	java -cp bin com.craftinginterpreters.lox.Lox scripts/$(filter-out $@,$(MAKECMDGOALS))
+
 run-dbg:
-	java -cp bin com.craftinginterpreters.lox.Lox example.lox
+	java -cp bin com.craftinginterpreters.lox.Lox scripts/example.lox
 
 always_run:
 	@:
