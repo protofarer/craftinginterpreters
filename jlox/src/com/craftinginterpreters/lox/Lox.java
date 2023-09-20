@@ -41,6 +41,9 @@ public class Lox {
       String line = reader.readLine();
       if (line == null)
         break;
+
+      // reset hadError so that REPL expr stdout works
+      hadError = false;
       run(line);
     }
   }
