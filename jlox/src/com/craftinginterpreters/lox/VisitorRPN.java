@@ -2,6 +2,10 @@ package com.craftinginterpreters.lox;
 
 class VisitorRPN implements Expr.Visitor<String> {
 	@Override
+	public String visitVariableExpr(Expr.Variable expr) {
+		return "var " + expr.name.lexeme;
+	}
+	@Override
 	public String visitBinaryExpr(Expr.Binary expr) {
 		String left = expr.left.accept(this);
 		String right = expr.right.accept(this);

@@ -3,7 +3,7 @@ package com.craftinginterpreters.lox;
 // For debugging parser and interpreter
 // Add necessary visit methods as more syntax tree types are implemented
 
-class AstPrinter implements Expr.Visitor<String> {
+class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<Void> {
 	String print(Expr expr) {
 		return expr.accept(this);
 	}
@@ -26,6 +26,35 @@ class AstPrinter implements Expr.Visitor<String> {
 		return parenthesize(expr.operator.lexeme, expr.right);
 	}
 
+	// ? check
+	@Override
+	public String visitVariableExpr(Expr.Variable expr) {
+		return expr.name.lexeme + "=" + expr.name.literal.toString();
+	}
+
+	@Override
+	public String visitAssignExpr(Expr.Assign expr) {
+		return expr.value.toString();
+	}
+
+	// ! correct?
+	@Override
+	public Void visitVarStmt(Stmt.Var stmt) {
+		return null;
+	}
+
+	// ! correct?
+	@Override
+	public Void visitExpressionStmt(Stmt.Expression stmt) {
+		return null;
+	}
+
+	// ! correct?
+	@Override
+	public Void visitPrintStmt(Stmt.Print stmt) {
+		return null;
+	}
+
 	private String parenthesize(String name, Expr... exprs) {
 		StringBuilder builder = new StringBuilder();
 
@@ -40,14 +69,20 @@ class AstPrinter implements Expr.Visitor<String> {
 	}
 
 	public static void main(String[] args) {
-		Expr expression = new Expr.Binary(
-			new Expr.Unary(
-				new Token(TokenType.MINUS, "-", null, 1),
-				new Expr.Literal(123)),
-			new Token(TokenType.STAR, "*", null, 1),
-			new Expr.Grouping(
-				new Expr.Literal(45.67)));
+		// Expr expression = new Expr.Binary(
+		// 	new Expr.Unary(
+		// 		new Token(TokenType.MINUS, "-", null, 1),
+		// 		new Expr.Literal(123)),
+		// 	new Token(TokenType.STAR, "*", null, 1),
+		// 	new Expr.Grouping(
+		// 		new Expr.Literal(45.67)));
 
-		System.out.println(new AstPrinter().print(expression));
+		// System.out.println(new AstPrinter().print(expression));
+
+		Expr expression2 = new Expr.Variable(new Token(TokenType.IDENTIFIER, "variableName", "variableValue", 2));
+		System.out.println(new AstPrinter().print(expression2));
+
+		// variable initialization
+		// variable assignment
 	}
 }
