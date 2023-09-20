@@ -1,18 +1,29 @@
 package com.craftinginterpreters.lox;
 
 import java.util.List;
+import java.util.Optional;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 	private Environment environment = new Environment();
 
-	void interpret(List<Stmt> statements) {
+	Optional<String> interpret(List<Stmt> statements) {
 		try {
 			for (Stmt statement : statements) {
 				execute(statement);
 			}
+
+			Stmt lastStmt = statements.get(statements.size() - 1);
+			if (lastStmt instanceof Stmt.Expression) {
+				Stmt.Expression exprStmt = (Stmt.Expression) lastStmt;
+				Object value = evaluate(exprStmt.expression);
+				return Optional.of(value.toString());
+			}
+
 		} catch (RuntimeError error) {
 			Lox.runtimeError(error);
 		}
+
+		return Optional.empty();
 	}
 
 	@Override
@@ -49,6 +60,25 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
 	private void execute(Stmt stmt) {
 		stmt.accept(this);
+	}
+
+	@Override
+	public Void visitBlockStmt(Stmt.Block stmt) {
+		executeBlock(stmt.statements, new Environment(environment));
+		return null;
+	}
+
+	void executeBlock(List<Stmt> statements, Environment environment) {
+		Environment previous = this.environment;
+		try {
+			this.environment = environment;
+
+			for (Stmt statement : statements) {
+				execute(statement);
+			}
+		} finally {
+			this.environment = previous;
+		}
 	}
 
 	@Override
@@ -138,7 +168,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 				if (left instanceof String) {
 					// right should be an object, boolean
 					String text = right.toString();
-					// System.out.println(text);
 					return (String)left + text;
 				}
 				if (right instanceof String) {
@@ -156,6 +185,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 			case STAR:
 				checkNumberOperand(expr.operator, left, right);
 				return (double)left * (double)right;
+			default:
 		}
 
 		// Unreachable

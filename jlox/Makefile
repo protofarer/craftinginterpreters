@@ -1,4 +1,5 @@
 all:
+	make genast
 	mkdir -p bin
 	javac -d bin/ src/com/craftinginterpreters/lox/*.java
 
@@ -12,7 +13,7 @@ run-file: always_run
 	java -cp bin com.craftinginterpreters.lox.Lox $(filter-out $@,$(MAKECMDGOALS))
 
 run-dbg:
-	java -cp bin com.craftinginterpreters.lox.Lox script.lox
+	java -cp bin com.craftinginterpreters.lox.Lox example.lox
 
 always_run:
 	@:

@@ -7,6 +7,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 public class Lox {
   private static final Interpreter interpreter = new Interpreter();
@@ -53,9 +54,10 @@ public class Lox {
     // Stop if syntax error
     if (hadError) return;
 
-    // System.out.println(new AstPrinter().print(expressions));
-
-    interpreter.interpret(statements);
+    Optional<String> value = interpreter.interpret(statements);
+    if (value.isPresent()) {
+      System.out.println(value.get());
+    }
   }
 
   static void error(int line, String message) {
