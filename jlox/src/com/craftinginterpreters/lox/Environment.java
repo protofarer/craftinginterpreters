@@ -21,7 +21,7 @@ class Environment {
 
 	Object get(Token name) {
 		if (values.containsKey(name.lexeme)) {
-			if (values.get(name.lexeme) == "no_val") {
+			if (values.get(name.lexeme) == Constants.VAR_UNINITIALIZED) {
 				throw new RuntimeError(name, "Cannot access uninitialized variable '" + name.lexeme + "'.");
 			}
 			return values.get(name.lexeme);

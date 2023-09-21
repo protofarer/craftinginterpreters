@@ -42,7 +42,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 			Object value = evaluate(stmt.initializer);
 			environment.define(stmt.name.lexeme, value);
 		} else {
-			environment.define(stmt.name.lexeme, "no_val");
+			environment.define(stmt.name.lexeme, Constants.VAR_UNINITIALIZED);
 		}
 
 		return null;

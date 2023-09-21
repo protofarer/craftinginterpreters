@@ -44,23 +44,29 @@ public class Lox {
 
       // reset hadError so that REPL expr stdout works
       hadError = false;
-      run(line);
+
+      Optional<String> value = run(line);
+
+      if (value.isPresent()) System.out.println(value.get());
     }
   }
 
-  private static void run(String source) {
+  private static Optional<String> run(String source) {
     Scanner scanner = new Scanner(source);
     List<Token> tokens = scanner.scanTokens();
     Parser parser = new Parser(tokens);
     List<Stmt> statements = parser.parse();
 
     // Stop if syntax error
-    if (hadError) return;
+    if (hadError) return Optional.empty();
 
     Optional<String> value = interpreter.interpret(statements);
+
     if (value.isPresent()) {
-      System.out.println(value.get());
+      return Optional.of(value.get());
     }
+
+    return Optional.empty();
   }
 
   static void error(int line, String message) {
