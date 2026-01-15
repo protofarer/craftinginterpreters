@@ -1,18 +1,44 @@
 package com.craftinginterpreters.lox;
 
+// step char by char creating tokens out of lexemes
+// there are grammar rules to follow, eg legal names for identifiers
+// create a token for ea lexeme
+// handle errors
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.craftinginterpreters.lox.TokenType.*;
+import static com.craftinginterpreters.lox.TokenType.*; // static import, avoid typing "TokenType" all over
 
 class Scanner {
 	private final String source;
-	private final List<Token> tokens = new ArrayList<>();
+	private final List<Token> tokens = new ArrayList<>(); // ArrayList<>, infers <Token> from the type declaration List<Token>
 	private int start = 0;
 	private int current = 0;
 	private int line = 1;
+
+	private static final Map<String, TokenType> keywords;
+	static {
+		keywords = new HashMap<>();
+		keywords.put("and",		AND);
+		keywords.put("class",	CLASS);
+		keywords.put("else",	ELSE);
+		keywords.put("false",	FALSE);
+		keywords.put("for",		FOR);
+		keywords.put("fun",		FUN);
+		keywords.put("if",		IF);
+		keywords.put("nil",		NIL);
+		keywords.put("or",		OR);
+		keywords.put("print",	PRINT);
+		keywords.put("return",	RETURN);
+		keywords.put("super",	SUPER);
+		keywords.put("this",	THIS);
+		keywords.put("true",	TRUE);
+		keywords.put("var",		VAR);
+		keywords.put("while",	WHILE);
+	}
 
 	Scanner(String source) {
 		this.source = source;
@@ -44,37 +70,12 @@ class Scanner {
 			case '-': addToken(MINUS); break;
 			case '+': addToken(PLUS); break;
 			case ';': addToken(SEMICOLON); break;
-			case '*': 
-				addToken(STAR); break;
-			case '!':
-				addToken(match('=') ? BANG_EQUAL : BANG);
-				break;
-			case '=':
-				addToken(match('=') ? EQUAL_EQUAL : EQUAL);
-				break;
-			case '<':
-				addToken(match('=') ? LESS_EQUAL : LESS);
-				break;
-			case '>':
-				addToken(match('=') ? GREATER_EQUAL : GREATER);
-				break;
+			case '*': addToken(STAR); break;
+			case '!': addToken(match('=') ? BANG_EQUAL : BANG); break;
+
 			case '/':
 				if (match('/')) {
 					while (peek() != '\n' && !isAtEnd()) advance();
-				} else if (match('*')) {
-					while (true) {
-						if (isAtEnd()) {
-							Lox.error(line, "Unterminated block comment.");
-							break;
-						} else if (peek() == '\n') {
-							line++;
-						} else if (peek() == '*' && peekNext() == '/') {
-							advance();
-							advance();
-							break;
-						}
-						advance();
-					}
 				} else {
 					addToken(SLASH);
 				}
@@ -108,11 +109,12 @@ class Scanner {
 	}
 
 	private void addToken(TokenType type) {
+		// form a token, then add to tokenList
 		addToken(type, null);
 	}
 
 	private void addToken(TokenType type, Object literal) {
-		String text = source.substring(start, current); 
+		String text = source.substring(start, current);
 		tokens.add(new Token(type, text, literal, line));
 	}
 
@@ -143,6 +145,7 @@ class Scanner {
 		// The closing ".
 		advance();
 
+		// Trim surrounding quotes
 		String value = source.substring(start + 1, current - 1);
 		addToken(STRING, value);
 	}
@@ -152,11 +155,10 @@ class Scanner {
 	}
 
 	private void number() {
-		while(isDigit(peek())) advance();
+		while (isDigit(peek())) advance();
 
 		// look for fractional part
 		if (peek() == '.' && isDigit(peekNext())) {
-			// Consume the "."
 			advance();
 
 			while (isDigit(peek())) advance();
@@ -180,34 +182,12 @@ class Scanner {
 	}
 
 	private boolean isAlpha(char c) {
-		return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || c == '_';
+		return (c >= 'a' && c <= 'z') ||
+				(c >= 'A' && c <= 'Z') ||
+				c == '_';
 	}
 
 	private boolean isAlphaNumeric(char c) {
 		return isAlpha(c) || isDigit(c);
 	}
-
-	private static final Map<String, TokenType> keywords;
-
-	static {
-		keywords = new HashMap<>();
-		keywords.put("and",    AND);
-    keywords.put("class",  CLASS);
-    keywords.put("else",   ELSE);
-    keywords.put("false",  FALSE);
-    keywords.put("for",    FOR);
-    keywords.put("fun",    FUN);
-    keywords.put("if",     IF);
-    keywords.put("nil",    NIL);
-    keywords.put("or",     OR);
-    keywords.put("print",  PRINT);
-    keywords.put("return", RETURN);
-    keywords.put("super",  SUPER);
-    keywords.put("this",   THIS);
-    keywords.put("true",   TRUE);
-    keywords.put("var",    VAR);
-    keywords.put("while",  WHILE);
-
-	}
-
 }

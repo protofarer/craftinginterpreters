@@ -10,85 +10,57 @@ import java.util.List;
 import java.util.Optional;
 
 public class Lox {
-  private static final Interpreter interpreter = new Interpreter();
-  static boolean hadError = false;
-  static boolean hadRuntimeError = false;
+	static boolean hadError = false;
+	public static void main(String[] args) throws IOException {
+		if (args.length > 1) {
+			System.out.println("Usage: jlox [script]");
+			System.exit(64);
+		} else if (args.length == 1) {
+			runFile(args[0]);
+		} else {
+			runPrompt();
+		}
+	}
 
-  public static void main(String[] args) throws IOException {
-    if (args.length > 1) {
-      System.out.println("Usage: jlox [script]");
-      System.exit(64);
-    } else if (args.length == 1) {
-      runFile(args[0]);
-    } else {
-      runPrompt();
-    }
-  }
+	private static void runFile(String path) throws IOException {
+		byte[] bytes = Files.readAllBytes(Paths.get(path));
+		run(new String(bytes, Charset.defaultCharset()));
 
-  private static void runFile(String path) throws IOException {
-    byte[] bytes = Files.readAllBytes(Paths.get(path));
-    run(new String(bytes, Charset.defaultCharset()));
-    if (hadError) System.exit(65);
-    if (hadRuntimeError) System.exit(70);
-  }
+		if (hadError) System.exit(65);
+	}
 
-  private static void runPrompt() throws IOException {
-    InputStreamReader input = new InputStreamReader(System.in);
-    BufferedReader reader = new BufferedReader(input);
+	private static void runPrompt() throws IOException {
+		// open stream
+		// attach reader
+		// loop over reader.readlines
+		// if null, exit
+		InputStreamReader input = new InputStreamReader(System.in);
+		BufferedReader reader = new BufferedReader(input);
 
-    for (;;) {
-      System.out.print("> ");
-      String line = reader.readLine();
-      if (line == null)
-        break;
+		for (;;) {
+			System.out.print("> ");
+			String line = reader.readLine();
+			if (line == null) break;
+			run(line);
+			hadError = false;
+		}
+	}
 
-      // reset hadError so that REPL expr stdout works
-      hadError = false;
+	private static void run(String source) {
+		Scanner scanner = new Scanner(source);
+		List<Token> tokens = scanner.scanTokens();
 
-      Optional<String> value = run(line);
+		for (Token token : tokens) {
+			System.out.println(token);
+		}
+	}
 
-      if (value.isPresent()) System.out.println(value.get());
-    }
-  }
+	static void error(int line, String message) {
+		report(line, "", message);
+	}
 
-  private static Optional<String> run(String source) {
-    Scanner scanner = new Scanner(source);
-    List<Token> tokens = scanner.scanTokens();
-    Parser parser = new Parser(tokens);
-    List<Stmt> statements = parser.parse();
-
-    // Stop if syntax error
-    if (hadError) return Optional.empty();
-
-    Optional<String> value = interpreter.interpret(statements);
-
-    if (value.isPresent()) {
-      return Optional.of(value.get());
-    }
-
-    return Optional.empty();
-  }
-
-  static void error(int line, String message) {
-    report(line, "", message);
-  }
-
-  static void report(int line, String where, String message) {
-    System.err.println(
-        "[line " + line + "] Error" + where + ": " + message);
-    hadError = true;
-  }
-
-  static void error(Token token, String message) {
-    if (token.type == TokenType.EOF) {
-      report(token.line, " at end", message);
-    } else {
-      report(token.line, " at '" + token.lexeme + "'", message);
-    }
-  }
-
-  static void runtimeError(RuntimeError error) {
-    System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
-    hadRuntimeError = true;
-  }
+	private static void report(int line, String where, String message) {
+		System.err.println("[line " + line + "] Error" + where + ": " + message);
+		hadError = true;
+	}
 }

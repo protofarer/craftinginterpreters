@@ -1,0 +1,24 @@
+BUILD_DIR:='bin/'
+alias a := build
+alias b := run
+alias c := go
+
+build:
+	mkdir -p {{BUILD_DIR}}
+	javac -d {{BUILD_DIR}} src/com/craftinginterpreters/lox/*.java
+
+run:
+	java -cp {{BUILD_DIR}} com.craftinginterpreters.lox.Lox
+
+go:
+	mkdir -p {{{{BUILD_DIR}}}}
+	javac -d {{BUILD_DIR}} src/com/craftinginterpreters/lox/Lox.java
+	java -cp {{BUILD_DIR}} com.craftinginterpreters.lox.Lox
+
+gen-ast:
+	mkdir -p {{BUILD_DIR}}
+	javac -d {{BUILD_DIR}} src/com/craftinginterpreters/tool/GenerateAst.java
+	java -cp {{BUILD_DIR}} com.craftinginterpreters.tool.GenerateAst src/com/craftinginterpreters/lox
+
+clean:
+	rm -rf {{BUILD_DIR}}
