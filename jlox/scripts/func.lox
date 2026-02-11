@@ -1,0 +1,5 @@
+fun sayHello(first, last) {
+	print "hello " + first + " " + last;
+}
+
+sayHello("Banjo", "Kek");
