@@ -1,0 +1,10 @@
+CompileFlags:
+  Add:
+    - -std=c11
+    - -I.
+    - -Wall
+    - -Wextra
+    - -Wshadow
+    - -Wno-unused-variable
+    - -Wno-cast-function-type
+    - -Wno-unused-parameter

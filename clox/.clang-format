@@ -1,0 +1,12 @@
+---
+BasedOnStyle: LLVM
+Language: C
+
+# Brace style
+BreakBeforeBraces: Allman
+
+# Indentation
+IndentWidth: 4
+UseTab: Always
+TabWidth: 4
+---
