@@ -71,6 +71,27 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 		return parenthesize("call", expr.callee, expr.arguments);
 	}
 
+	@Override
+	public String visitSetExpr(Expr.Set expr) {
+		return parenthesize("object-set-property", expr.object, expr.name, expr.value);
+	}
+
+
+	@Override
+	public String visitGetExpr(Expr.Get expr) {
+		return parenthesize("object-get-property", expr.object, expr.name);
+	}
+
+	@Override
+	public String visitThisExpr(Expr.This expr) {
+		return parenthesize("this");
+	}
+
+	@Override
+	public String visitSuperExpr(Expr.Super expr) {
+		return parenthesize("super");
+	}
+
 	// TODO: what should below be???
 
 	@Override
@@ -92,6 +113,10 @@ class AstPrinter implements Expr.Visitor<String>, Stmt.Visitor<String> {
 	}
 	@Override
 	public String visitReturnStmt(Stmt.Return stmt) {
+		return "";
+	}
+	@Override
+	public String visitClassStmt(Stmt.Class stmt) {
 		return "";
 	}
 

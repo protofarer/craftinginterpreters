@@ -1,0 +1,4 @@
+// 12-3 creating barebones LoxClass instances
+class Bagel {}
+var bagel = Bagel();
+print bagel;

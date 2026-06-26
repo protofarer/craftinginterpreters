@@ -1,0 +1,9 @@
+// 12-2 crude class wrapper test
+
+class DevonshireCream {
+	serveOn() {
+		return "Scones";
+	}
+}
+
+print DevonshireCream;

@@ -1,0 +1,8 @@
+// 12-5 test method access
+class Bacon {
+	eat() {
+		print "Crunch crunch crunch!";
+	}
+}
+
+Bacon().eat();

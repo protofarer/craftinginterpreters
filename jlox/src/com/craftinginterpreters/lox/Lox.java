@@ -111,6 +111,10 @@ public class Lox {
 		Parser parser = new Parser(tokens);
 		List<Stmt> statements = parser.parse();
 
+		AstPrinter printer = new AstPrinter();
+		String a = printer.print(statements.get(0));
+		System.out.println(a);
+
 		// Stop if there was a syntax error
 		if (hadError) return;
 
