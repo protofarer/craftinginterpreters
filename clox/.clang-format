@@ -3,7 +3,7 @@ BasedOnStyle: LLVM
 Language: C
 
 # Brace style
-BreakBeforeBraces: Allman
+BreakBeforeBraces: Attach
 
 # Indentation
 IndentWidth: 4
