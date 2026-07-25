@@ -42,7 +42,6 @@ void writeConstant(Chunk *chunk, Value value, int line) {
 		writeChunk(chunk, OP_CONSTANT, line);
 		writeChunk(chunk, idx, line); // int truncated to uint8_t
 	} else {
-		// TODO: 24-bit operand (index)
 		writeChunk(chunk, OP_CONSTANT_LONG, line);
 		writeChunk(chunk, idx, line); // int truncated to uint8_t
 		writeChunk(chunk, idx >> 8, line);
