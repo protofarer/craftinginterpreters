@@ -138,7 +138,7 @@ static ParseRule* getRule(TokenType type);
 static void parsePrecedence(Precedence precedence);
 
 static void binary() {
-	printf("binary()\n");
+	/* printf("binary()\n"); */
 	TokenType operatorType = parser.previous.type;
 	ParseRule* rule = getRule(operatorType);
 	parsePrecedence((Precedence)(rule->precedence + 1));
@@ -172,19 +172,24 @@ static void expression() {
 }
 
 static void grouping() {
-	printf("grouping()\n");
+	/* printf("grouping()\n"); */
 	expression();
 	consume(TOKEN_RIGHT_PAREN, "Expect ')' after expression.");
 }
 
 static void number() {
-	printf("number()\n");
+	/* printf("number()\n"); */
 	double value = strtod(parser.previous.start, NULL);
 	emitConstant(NUMBER_VAL(value));
 }
 
+static void string() {
+	emitConstant(OBJ_VAL(copyString(parser.previous.start + 1,
+									parser.previous.length -  2)));
+}
+
 static void unary() {
-	printf("unary()\n");
+	/* printf("unary()\n"); */
 	TokenType operatorType = parser.previous.type;
 
 	// compile the operand
@@ -221,7 +226,7 @@ ParseRule rules[] = {
   [TOKEN_LESS]          = {NULL,     binary, PREC_COMPARISON},
   [TOKEN_LESS_EQUAL]    = {NULL,     binary, PREC_COMPARISON},
   [TOKEN_IDENTIFIER]    = {NULL,     NULL,   PREC_NONE},
-  [TOKEN_STRING]        = {NULL,     NULL,   PREC_NONE},
+  [TOKEN_STRING]        = {string,   NULL,   PREC_NONE},
   [TOKEN_NUMBER]        = {number,   NULL,   PREC_NONE},
   [TOKEN_AND]           = {NULL,     NULL,   PREC_NONE},
   [TOKEN_CLASS]         = {NULL,     NULL,   PREC_NONE},
@@ -274,7 +279,7 @@ char* precedenceWord(Precedence precedence) {
 
 // this is found under expr() in pinky pratt, except a discrete function.
 static void parsePrecedence(Precedence precedence) {
-	printf("START parsePrecedence(%d %s)\n", precedence, precedenceWord(precedence));
+	/* printf("START parsePrecedence(%d %s)\n", precedence, precedenceWord(precedence)); */
 	advance();
 	// nud
 	ParseFn prefixRule = getRule(parser.previous.type)->prefix;
@@ -291,7 +296,7 @@ static void parsePrecedence(Precedence precedence) {
 		ParseFn infixRule = getRule(parser.previous.type)->infix;
 		infixRule();
 	}
-	printf("END parsePrecedence(%d %s)\n", precedence, precedenceWord(precedence));
+	/* printf("END parsePrecedence(%d %s)\n", precedence, precedenceWord(precedence)); */
 }
 
 static ParseRule* getRule(TokenType type) {
