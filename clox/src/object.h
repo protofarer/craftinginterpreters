@@ -24,13 +24,18 @@ struct ObjString {
 	Obj obj;
 	int length;
 	/* char* chars; */
+	uint32_t hash;
 	char chars[]; // flexible array member
 };
 
-/* ObjString* takeString(char* chars, int length); */
 ObjString* makeString(int length);
 ObjString* copyString(const char* chars, int length);
 void printObject(Value value);
+
+// because FAM for ObjString.chars
+/* ObjString* takeString(char* chars, int length); */
+// helper that does some of takeString code
+ObjString* intern(char* chars, int length);
 
 static inline bool isObjType(Value value, ObjType type) {
 	return IS_OBJ(value) && AS_OBJ(value)->type == type;

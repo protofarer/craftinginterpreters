@@ -20,14 +20,7 @@ static int simpleInstruction(const char *name, int offset) {
 
 static int constantInstruction(const char *name, Chunk *chunk, int offset) {
 	OpCode opcode = (OpCode)chunk->code[offset];
-	if (opcode == OP_CONSTANT) {
-		uint8_t idx = chunk->code[offset + 1];
-		printf("%-16s %05d '", name, idx);
-		printValue(chunk->constants.values[idx]);
-		printf("'\n");
-		return offset + 2;
-	}
-	// TODO: has a 24-bit index
+	// 24-bit index
 	if (opcode == OP_CONSTANT_LONG) {
 		uint8_t lo = chunk->code[offset + 1];
 		uint8_t mid = chunk->code[offset + 2];
@@ -37,8 +30,13 @@ static int constantInstruction(const char *name, Chunk *chunk, int offset) {
 		printValue(chunk->constants.values[idx]);
 		printf("'\n");
 		return offset + 4;
-	}
-	return -1;
+	} 
+
+	uint8_t idx = chunk->code[offset + 1];
+	printf("%-16s %05d '", name, idx);
+	printValue(chunk->constants.values[idx]);
+	printf("'\n");
+	return offset + 2;
 }
 
 int disassembleInstruction(Chunk *chunk, int offset) {
@@ -65,6 +63,14 @@ int disassembleInstruction(Chunk *chunk, int offset) {
 		return simpleInstruction("OP_TRUE", offset);
 	case OP_FALSE:
 		return simpleInstruction("OP_FALSE", offset);
+	case OP_POP:
+		return simpleInstruction("OP_POP", offset);
+	case OP_GET_GLOBAL:
+		return constantInstruction("OP_GET_GLOBAL", chunk, offset);
+	case OP_DEFINE_GLOBAL:
+		return constantInstruction("OP_DEFINE_GLOBAL", chunk, offset);
+	case OP_SET_GLOBAL:
+		return constantInstruction("OP_SET_GLOBAL", chunk, offset);
 	case OP_EQUAL:
 		return simpleInstruction("OP_EQUAL", offset);
 	case OP_GREATER:
@@ -73,6 +79,8 @@ int disassembleInstruction(Chunk *chunk, int offset) {
 		return simpleInstruction("OP_LESS", offset);
 	case OP_NEGATE:
 		return simpleInstruction("OP_NEGATE", offset);
+	case OP_PRINT:
+		return simpleInstruction("OP_PRINT", offset);
 	case OP_ADD:
 		return simpleInstruction("OP_ADD", offset);
 	case OP_SUBTRACT:
