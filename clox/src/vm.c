@@ -1,3 +1,4 @@
+#include "chunk.h"
 #include "common.h"
 #include "debug.h"
 #include "object.h"
@@ -112,7 +113,10 @@ static void concatenate() {
 
 
 static InterpretResult run() {
+
 #define READ_BYTE() (*vm.ip++)
+#define READ_SHORT() \
+	(vm.ip += 2, (uint16_t)((vm.ip[-2] << 8) | vm.ip[-1]))
 #define READ_CONSTANT() (vm.chunk->constants.values[READ_BYTE()])
 #define READ_CONSTANT_LONG() (vm.chunk->constants.values[(READ_BYTE() << 16) | (READ_BYTE() << 8) | READ_BYTE()])
 // TODO: READ_STRING or caller needs to branch for READ_CONSTANT_LONG
@@ -128,7 +132,9 @@ static InterpretResult run() {
 		push(valueType(a op b)); \
 	} while (false)
 
+
 	for (;;) {
+
 #ifdef DEBUG_TRACE_EXECUTION
 		printf("		");
 		for (Value* slot = vm.stack; slot < vm.stackTop; slot++) {
@@ -139,6 +145,7 @@ static InterpretResult run() {
 		printf("\n");
 		disassembleInstruction(vm.chunk, (int)(vm.ip - vm.chunk->code));
 #endif
+
 		uint8_t instruction;
 		switch (instruction = READ_BYTE()) {
 			case OP_ADD:		
@@ -230,6 +237,21 @@ static InterpretResult run() {
 				printf("\n");
 				break;
 			}
+			case OP_JUMP: {
+				uint16_t offset = READ_SHORT();
+				vm.ip += offset;
+				break;
+			}
+			case OP_JUMP_IF_FALSE: {
+				uint16_t offset = READ_SHORT();
+				if (isFalsey(peek(0))) vm.ip += offset;
+				break;
+			}
+			case OP_LOOP: {
+				uint16_t offset = READSHORT();
+				vm.ip -= offset;
+				break;
+			}
 			case OP_RETURN: {
 				// exit interpreter
 				return INTERPRET_OK;
@@ -238,6 +260,7 @@ static InterpretResult run() {
 	}
 
 #undef READ_BYTE
+#undef READ_SHORT
 #undef READ_CONSTANT
 #undef READ_CONSTANT_LONG
 #undef READ_STRING

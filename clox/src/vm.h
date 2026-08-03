@@ -9,7 +9,7 @@
 
 typedef struct {
 	Chunk* chunk;
-	uint8_t* ip; // faster to deref ptr than lookup element in arr by idx
+	uint8_t* ip; // faster to deref ptr than lookup element in arr by idx; points at chunk->code
 	Value stack[STACK_MAX];
 	Value *stackTop;
 	Table globals;
